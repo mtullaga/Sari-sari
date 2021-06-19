@@ -44,15 +44,27 @@
         <link rel="stylesheet" href="assets/onsenui/css/onsen-css-components.min.css">
 
         <script src="assets/onsenui/js/onsenui.min.js"></script>
-        <script src="assets/jquery-3.5.1/jquery-3.5.1.min.js"></script>
 
+        <!-- Vue2 -->
         <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+        <script src="js/db.js"></script>
+
 
         <title>Login</title>
     </head>
     <body>
        
-        <ons-page>
+        <ons-page id="app">
 
             <center>
                 <img src="img/logo.png" width="185" height="100" style="margin-top: 10px">
@@ -65,24 +77,21 @@
             </center>
 
             <div style="border: 0px solid green; width: 190px; margin: auto; margin-top: 10px">       
-              <ons-button id="num1">1</ons-button>
-              <ons-button id="num2">2</ons-button>
-              <ons-button id="num3">3</ons-button>
-              <ons-button id="num4">4</ons-button>
-              <ons-button id="num5">5</ons-button>
-              <ons-button id="num6">6</ons-button>
-              <ons-button id="num7">7</ons-button>
-              <ons-button id="num8">8</ons-button>
-              <ons-button id="num9">9</ons-button>
-              <ons-button id="numcheck" style="border-radius: 50px; font-size:25px; padding: 8px; margin: 6px">
-                    <ons-icon icon="fa-check" size="18px" style="margin: 0px 7px 0px 7px;">
-                    </ons-icon>
-               </ons-button>
-              <ons-button id="num0">0</ons-button>
-              <ons-button id="numx" style="border-radius: 50px; font-size:25px; padding: 8px; margin: 6px">
-                     <ons-icon icon="fa-backspace" size="18px" style="margin: 0px 5px 0px 5px;">
-                    </ons-icon>
-               </ons-button>
+                <button class="fab" @click="clkNum('1')">1</button>
+                <button class="fab" @click="clkNum('2')">2</button>
+                <button class="fab" @click="clkNum('3')">3</button>
+                <button class="fab" @click="clkNum('4')">4</button>
+                <button class="fab" @click="clkNum('5')">5</button>
+                <button class="fab" @click="clkNum('6')">6</button>
+                <button class="fab" @click="clkNum('7')">7</button>
+                <button class="fab" @click="clkNum('8')">8</button>
+                <button class="fab" @click="clkNum('9')">9</button>
+                <button class="fab" @click="clkCheck"><ons-icon icon="fa-check"></ons-icon></button>
+                <button class="fab" @click="clkNum('0')">0</button>
+                <button class="fab" @click="clkBackspace"><ons-icon icon="fa-backspace"></ons-icon></button>
+
+
+
             </div>
             <br>
             <center><a href="">Forgot Password</a></center>
