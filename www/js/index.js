@@ -23,7 +23,20 @@ function onDeviceReady() {
 		methods:{
 			clkNum: function(val){
 				this.pin = this.pin+val
-				ons.notification.prompt('What is your name?')
+				if(this.pin.length == 6){
+					db.collection("users")
+						.where("pin", "==", this.pin)
+						.get()
+						.then(querySnapshot => {
+							console.log(this.pin)
+							if(querySnapshot.empty){
+								
+							}
+						})
+						.catch((err)=>{
+							console.log(err)
+						})
+				}
 			},
 			
 			clkCheck: function(){
@@ -36,22 +49,7 @@ function onDeviceReady() {
 		},
 
 		created(){
-			db.collection("users")
-				.orderBy('name')
-				.get()
-				.then(querySnapshot => 
-				querySnapshot.docs.map(doc => {
-					let data = doc.data()
-					return {
-					id: doc.id,
-					name: data.name,
-					}
-				})
-				)
-				.then((users) => {
-					console.log(users)
-					
-				})
+			
 		}
 	  })
 
