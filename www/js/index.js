@@ -133,14 +133,14 @@ function onDeviceReady() {
 	});
 
 	$('#numcheck').click(function () {
-	    if($('#passinput').val() == '08'){
-				window.location.href = "components/admin/main.html";
-		}else{
-			ons.notification.alert('Sorry, invalid pin. Please try again.');
-			$('#passinput').val('');
-		}
+	    // if($('#passinput').val() == '08'){
+		// 		window.location.href = "components/admin/main.html";
+		// }else{
+		// 	ons.notification.alert('Sorry, invalid pin. Please try again.');
+		// 	$('#passinput').val('');
+		// }
 
-		// window.location.href = "components/admin/main.html"
+		window.location.href = "components/admin/main.html"
 	});
 
 	
