@@ -1,0 +1,245 @@
+<ons-page>
+  <ons-toolbar>
+    <div class="left">
+      <ons-toolbar-button  onclick="fn.load('items/items.html')">
+        <ons-icon icon="md-arrow-left" size="20px"></ons-icon>
+      </ons-toolbar-button>
+    </div>
+    <div class="center">
+      Add Item
+    </div>
+  </ons-toolbar>
+
+	<div class="container addItemCorner">
+		<br>
+
+
+		  <div class="form-group">
+		    <label for="itemName">Item Name</label><br>
+		    <input type="text" name="itemName" id="itemName" autocomplete="off" class="form-control mtop form-control-sm typeahead">
+		  </div>
+		  <div class="form-group">
+		    <label for="description">Description</label>
+		    <input type="text" name="description" id="description" autocomplete="off" class="form-control mtop form-control-sm">
+		  </div>
+		  <div class="form-group">
+		    <label for="qty">Quantity</label>
+		    <input type="number" name="qty" id="qty" autocomplete="off" class="form-control mtop form-control-sm">
+		  </div>
+		  <div class="form-group">
+		    <label for="unit">Unit</label>
+		    <select id="unit" class="form-control form-control-sm mtop">	
+		    </select>
+		  </div>
+		  <div class="form-group">
+		    <label for="category">Category</label>
+		    <select id="category" class="form-control form-control-sm mtop">	
+		    </select>
+		  </div>
+		  <div class="form-group">
+		    <label for="price">Price</label>
+		    <input type="number" name="price" id="price" autocomplete="off" class="form-control mtop form-control-sm">
+		  </div>
+		 
+		  <center><button onclick="submitItem()" class="btn btn-primary">Submit</button></center>
+
+	</div>
+
+
+  <script type="text/javascript">
+
+
+
+
+
+  	var ipaddress = localStorage.getItem('serverAddress');
+
+  	loadUnitList();
+  	loadCategoryList();
+
+
+  	var alreadyNames = [];
+  	
+
+  	$('.addItemCorner #itemName').focus();
+
+    function submitItem(){
+
+    	var itemName = $('.addItemCorner #itemName').val();
+    	var price = $('.addItemCorner #price').val();
+
+		if(itemName==''){
+			ons.notification.alert({
+				message:'Please input <b>Item name</b>.',
+				callback: function(){
+					$('.addItemCorner #itemName').focus();
+				}
+			});
+		}else if(price == ''){
+			ons.notification.alert({
+				message:'Please input <b>Item price</b>.',
+				callback: function(){
+					$('.addItemCorner #price').focus();
+				}
+			});
+    	}else{
+
+    		ons.notification.confirm({
+		        message: '<b>'+itemName+'</b> is already added, are you sure you want to continue add this item again?',
+		        buttonLabels: ['Yes', 'No'],
+		        callback: function(i) {
+		          if (i==0) {
+			    		var itemName = $('.addItemCorner #itemName').val();
+			    		var description = $('.addItemCorner #description').val();
+			    		var qty = $('.addItemCorner #qty').val();
+			    		var unit = $('.addItemCorner #unit').val();
+			    		var category = $('.addItemCorner #category').val();
+			    		var price = $('.addItemCorner #price').val();
+
+			    		$.post(ipaddress+'/saridb/getcontent.php', {
+			    			data: 'addNewItem',
+			    			itemName: itemName,
+			    			description: description,
+			    			qty: qty,
+			    			unit: unit,
+			    			category: category,
+			    			price: price
+			    		}, function(res){
+					        if(res=='okay na'){
+					        	ons.notification.alert({
+									message:'New item successfully added.',
+									callback: function(){
+										fn.load('items/items.html');
+									}
+								});
+					        }else{
+					        	console.log(res);
+					        }
+			      		})
+		      		}
+		        }
+		      }); 
+	    }
+
+    }
+
+    function loadCategoryList(){
+    	$.post(ipaddress+'/saridb/getcontent.php', {data: 'getCategoryList'}, function(res){
+    		if(res == 'No records'){
+			}else{
+				for (var i = 0; i < JSON.parse(res).length; i++) {
+					var id = JSON.parse(res)[i][0];
+					var desc = JSON.parse(res)[i][1];
+					$('.addItemCorner #category').append('<option value="'+id+'">'+desc+'</option>')
+				}
+			}
+  		})
+    }
+
+    function loadUnitList(){
+    	$.post(ipaddress+'/saridb/getcontent.php', {data: 'getUnitList'}, function(res){
+    		if(res == 'No records'){
+			}else{
+				for (var i = 0; i < JSON.parse(res).length; i++) {
+					var id = JSON.parse(res)[i][0];
+					var desc = JSON.parse(res)[i][1];
+					$('.addItemCorner #unit').append('<option value="'+id+'">'+desc+'</option>')
+				}
+			}
+  		})
+    }
+
+
+    function loadAutoCompleteName(){
+		$.post(ipaddress+'/saridb/getcontent.php', {data: 'getAutocompleteName'}, function(res){
+    		if(res == 'No records'){
+			}else{
+				for (var i = 0; i < JSON.parse(res).length; i++) {
+					alreadyNames.push(JSON.parse(res)[i]);
+				}
+
+				var uniqueNames = [];
+
+				$.each(alreadyNames, function(i, el){
+				    if($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
+				});
+
+				$('.addItemCorner .typeahead').typeahead({
+				  hint: true,
+				  highlight: true,
+				  minLength: 1
+				},
+				{
+				  name: 'names',
+				  source: substringMatcher(uniqueNames)
+				});
+			}
+  		})
+
+
+		  	var substringMatcher = function(strs) {
+		  		return function findMatches(q, cb) {
+		    var matches, substringRegex;
+
+		    // an array that will be populated with substring matches
+		    matches = [];
+
+		    // regex used to determine if a string contains the substring `q`
+		    substrRegex = new RegExp(q, 'i');
+
+		    // iterate through the pool of strings and for any string that
+		    // contains the substring `q`, add it to the `matches` array
+		    $.each(strs, function(i, str) {
+		      if (substrRegex.test(str)) {
+		        matches.push(str);
+		      }
+		    });
+
+		    cb(matches);
+		  };
+		};
+
+	}
+
+	loadAutoCompleteName();
+
+
+
+
+  </script>
+
+
+
+
+
+
+
+  <style type="text/css">
+   
+  	.mtop{
+  		margin-top: -8px;
+  	}
+
+	.typeahead {
+		background-color: #FFFFFF;
+		width: 175%;
+	}
+
+	.tt-query {
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+	}
+	.tt-hint {
+		color: #999999;
+	}
+	.tt-menu {
+		background-color: #FFFFFF;
+		border: 1px solid rgba(0, 0, 0, 0.2);
+		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+		margin-top: 3px;
+		padding: 5px;
+		width: 175%;
+	}
+
+  </style>
+
+</ons-page>

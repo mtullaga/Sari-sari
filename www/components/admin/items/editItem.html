@@ -1,0 +1,173 @@
+<ons-page>
+  <ons-toolbar>
+    <div class="left">
+      <ons-toolbar-button  onclick="fn.load('items/items.html')">
+        <ons-icon icon="md-arrow-left" size="20px"></ons-icon>
+      </ons-toolbar-button>
+    </div>
+    <div class="center">
+      Edit Item
+    </div>
+  </ons-toolbar>
+
+	<div class="container editItemCorner">
+		<br>
+
+		<input type="text" id="itemID" style="display: none">
+
+		  <div class="form-group">
+		    <label for="itemName">Item Name</label>
+		    <input type="text" name="itemName" id="itemName" class="form-control mtop form-control-sm">
+		  </div>
+		  <div class="form-group">
+		    <label for="description">Description</label>
+		    <input type="text" name="description" id="description" class="form-control mtop form-control-sm">
+		  </div>
+		  <div class="form-group">
+		    <label for="qty">Quantity</label>
+		    <input type="number" name="qty" id="qty" class="form-control mtop form-control-sm">
+		  </div>
+		  <div class="form-group">
+		    <label for="unit">Unit</label>
+		    <select id="unit" class="form-control form-control-sm mtop">	
+		    </select>
+		  </div>
+		  <div class="form-group">
+		    <label for="category">Category</label>
+		    <select id="category" class="form-control form-control-sm mtop">	
+		    </select>
+		  </div>
+		  <div class="form-group">
+		    <label for="price">Price</label>
+		    <input type="number" name="price" id="price" class="form-control mtop form-control-sm">
+		  </div>
+		 
+		  <center><button onclick="submitUpdateItem()" class="btn btn-primary">Submit Update</button></center>
+
+	</div>
+
+
+
+
+  <script type="text/javascript">
+
+  	var ipaddress = localStorage.getItem('serverAddress');
+
+  	var itemsArr = JSON.parse(localStorage.getItem('itemEditArr'));
+
+  	loadUnitList(itemsArr[5]);
+  	loadCategoryList(itemsArr[6]);
+
+  	$('.editItemCorner #itemID').val(itemsArr[0]);
+  	$('.editItemCorner #itemName').val(itemsArr[1]);
+  	$('.editItemCorner #description').val(itemsArr[2]);
+  	$('.editItemCorner #qty').val(itemsArr[3]);
+  	$('.editItemCorner #price').val(itemsArr[4]);
+  	// $('.editItemCorner #price').val(itemsArr[4]);
+  	
+
+  	$('.editItemCorner #itemName').focus();
+
+    function submitUpdateItem(){
+
+    	var itemName = $('.editItemCorner #itemName').val();
+    	var price = $('.editItemCorner #price').val();
+
+    	var id = $('.editItemCorner #itemID').val();
+    	var description = $('.editItemCorner #description').val();
+		var qty = $('.editItemCorner #qty').val();
+		var unit = $('.editItemCorner #unit').val();
+		var category = $('.editItemCorner #category').val();
+
+		if(itemName==''){
+			ons.notification.alert({
+				message:'Please input <b>Item name</b>.',
+				callback: function(){
+					$('.editItemCorner #itemName').focus();
+				}
+			});
+		}else if(price == ''){
+			ons.notification.alert({
+				message:'Please input <b>Item price</b>.',
+				callback: function(){
+					$('.editItemCorner #price').focus();
+				}
+			});
+    	}else{
+
+    		$.post(ipaddress+'/saridb/getcontent.php', {
+    			data: 'editItem',
+    			itemId: id,
+    			itemName: itemName,
+    			description: description,
+    			qty: qty,
+    			unit: unit,
+    			category: category,
+    			price: price
+    		}, function(res){
+
+		        if(res == 'okay na'){
+		        	ons.notification.alert({
+						message:'Item successfully updated.',
+						callback: function(){
+							fn.load('items/items.html');
+						}
+					});
+		        }else{
+		        	console.log(res);
+		        }
+
+      		})
+	    }
+
+    }
+
+    function loadCategoryList(selected){
+    	$.post(ipaddress+'/saridb/getcontent.php', {data: 'getCategoryList'}, function(res){
+    		if(res == 'No records'){
+			}else{
+				for (var i = 0; i < JSON.parse(res).length; i++) {
+					var id = JSON.parse(res)[i][0];
+					var desc = JSON.parse(res)[i][1];
+					$('.editItemCorner #category').append('<option value="'+id+'">'+desc+'</option>')
+				}
+
+				$("#category option").filter(function() {
+				  //may want to use $.trim in here
+				  return $(this).text() == selected;
+				}).prop('selected', true);
+			}
+  		})
+    }
+
+    function loadUnitList(selected){
+    	$.post(ipaddress+'/saridb/getcontent.php', {data: 'getUnitList'}, function(res){
+    		if(res == 'No records'){
+			}else{
+				for (var i = 0; i < JSON.parse(res).length; i++) {
+					var id = JSON.parse(res)[i][0];
+					var desc = JSON.parse(res)[i][1];
+					$('.editItemCorner #unit').append('<option value="'+id+'">'+desc+'</option>')
+				}
+
+				$("#unit option").filter(function() {
+				  //may want to use $.trim in here
+				  return $(this).text() == selected;
+				}).prop('selected', true);
+			}
+  		})
+    }
+
+  </script>
+
+
+
+  <style type="text/css">
+   
+  	.mtop{
+  		margin-top: -8px;
+  	}
+
+  </style>
+
+</ons-page>

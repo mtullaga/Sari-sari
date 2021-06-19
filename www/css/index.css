@@ -1,0 +1,20 @@
+
+
+
+#num1, #num2, #num3, #num4, #num5,
+#num6, #num7, #num8, #num9, #num0{
+    border-radius: 50px; 
+    font-size:25px; 
+    padding: 7px 17px 7px 17px; 
+    margin: 6px
+}
+
+#passinput{
+    font-size: 35px;
+    letter-spacing: 0.7em; 
+    background: transparent;
+    width: 125px; 
+    border:none; border-bottom: 
+    1px solid grey; 
+    margin-bottom: 10px;
+}
