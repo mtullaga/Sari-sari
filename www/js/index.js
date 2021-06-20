@@ -17,20 +17,24 @@ function onDeviceReady() {
 		el: '#app',
 		data: {
 		  pin: '',
+		  pin1: '',
 		  users:[],
 		},
 
 		methods:{
 			clkNum: function(val){
+				console.log(this.pin1)
 				this.pin = this.pin+val
 				if(this.pin.length == 6){
 					db.collection("users")
 						.where("pin", "==", this.pin)
 						.get()
 						.then(querySnapshot => {
-							console.log(this.pin)
-							if(querySnapshot.empty){
-								
+							if(!querySnapshot.empty){
+								console.log('okay na')
+							}else{
+								ons.notification.alert('Sorry, invalid pin');
+								this.pin = ""
 							}
 						})
 						.catch((err)=>{
@@ -45,6 +49,10 @@ function onDeviceReady() {
 
 			clkBackspace: function(){
 
+			},
+
+			changeNa: function(i){
+				console.log(i)
 			}
 		},
 
