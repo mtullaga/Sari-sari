@@ -23,11 +23,12 @@ function onDeviceReady() {
 		methods:{
 			clkNum: function(val){
 				this.pin = this.pin+val
-				ons.notification.prompt('What is your name?')
+				// ons.notification.prompt('What is your name?')
+				console.log(this.pin)
 			},
 			
 			clkCheck: function(){
-
+				console.log('oyu')
 			},
 
 			clkBackspace: function(){

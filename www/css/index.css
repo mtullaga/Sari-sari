@@ -10,7 +10,8 @@
     letter-spacing: 0.7em; 
     background: transparent;
     width: 125px; 
-    border:none; border-bottom: 
-    1px solid grey; 
+    border:none; 
+    border-bottom: 1px solid grey; 
+    color: black;
     margin-bottom: 10px;
 }
