@@ -14,17 +14,26 @@
 
         <link rel="stylesheet" href="../../css/index.css">
 
-        <link rel="stylesheet" href="../../assets/onsenui/css/onsenui.min.css">
-        <link rel="stylesheet" href="../../assets/onsenui/css/onsen-css-components.min.css">
-
-        <link rel="stylesheet" href="../../assets/bootstrap-4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="../../assets/onsenui/css/onsenui.css">
+        <link rel="stylesheet" href="../../assets/onsenui/css/onsen-css-components.css">
 
         <script src="../../assets/onsenui/js/onsenui.min.js"></script>
 
-        <script src="../../assets/typeahead.js/typeahead.bundle.min.js"></script>
+        <link rel="stylesheet" href="../../assets/bootstrap-4.3.1/css/bootstrap.min.css">
 
         <!-- Vue2 Import -->
         <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+        <!-- The core Firebase JS SDK is always required and must be listed first -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+
+        <!-- TODO: Add SDKs for Firebase products that you want to use
+            https://firebase.google.com/docs/web/setup#available-libraries -->
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+        <script src="../../js/db.js"></script>
         
 
         <title>Main</title>
@@ -33,13 +42,14 @@
 
       <ons-splitter>
           <ons-splitter-side id="menu" side="left" width="200px" collapse swipeable>
+
             <ons-page>
               <div style="text-align: center; margin-bottom: 5px">
                 
                 <img src="../../img/logo.png" width="50%" />
 
               </div>
-              <ons-list>
+              <ons-list style="font-family: Poppins;">
                 <ons-list-item onclick="fn.load('pos/pos.html')" tappable>
                   POS
                   <div class="right" style="color: #1154bf">
@@ -85,7 +95,7 @@
               </ons-list>
             </ons-page>
           </ons-splitter-side>
-          <ons-splitter-content id="content" page="pos/pos.html"></ons-splitter-content>
+          <ons-splitter-content id="content" page="categories/categories.html"></ons-splitter-content>
         </ons-splitter>
 
         <script type="text/javascript">
@@ -97,7 +107,7 @@
           }
         </script>
 
-        <!-- <script src="../../cordova.js"></script> -->
+        <script src="../../cordova.js"></script>
         <script src="../../js/admin/main.js"></script>
 
     </body>

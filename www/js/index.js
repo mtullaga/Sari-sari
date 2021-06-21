@@ -17,24 +17,31 @@ function onDeviceReady() {
 		el: '#app',
 		data: {
 		  pin: '',
-		  pin1: '',
 		  users:[],
 		},
 
 		methods:{
 			clkNum: function(val){
-				console.log(this.pin1)
 				this.pin = this.pin+val
-				if(this.pin.length == 6){
+				if(this.pin.length == 4){
 					db.collection("users")
 						.where("pin", "==", this.pin)
 						.get()
 						.then(querySnapshot => {
+							
 							if(!querySnapshot.empty){
-								console.log('okay na')
+								this.pin = ''
+								querySnapshot.docs.map(doc => {
+									let data = doc.data()
+									if(data.position == 'admin'){
+										window.location.href = 'components/admin/main.html'
+									}else{
+										window.location.href = 'components/staff/main.html'
+									}
+								})
 							}else{
 								ons.notification.alert('Sorry, invalid pin');
-								this.pin = ""
+								this.pin = ''
 							}
 						})
 						.catch((err)=>{
@@ -48,7 +55,8 @@ function onDeviceReady() {
 			},
 
 			clkBackspace: function(){
-
+				this.pin = this.pin.substring(0, this.pin.length - 1)
+				console.log(this.pin)
 			},
 
 			changeNa: function(i){

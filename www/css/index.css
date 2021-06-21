@@ -1,8 +1,10 @@
-
-
-
-.fab{
-    margin-bottom: 5px !important;
+@font-face {
+    font-family: "Poppins";
+    src: url('../assets/Fonts/Poppins/Poppins-Regular.ttf') format('embedded-opentype'), /* Internet Explorer */
+         url('../assets/Fonts/Poppins/Poppins-Regular.ttf') format('woff2'), /* Super Modern Browsers */
+         url('../assets/Fonts/Poppins/Poppins-Regular.ttf') format('woff'), /* Pretty Modern Browsers */
+         url('../assets/Fonts/Poppins/Poppins-Regular.ttf')  format('truetype'), /* Safari, Android, iOS */
+         url('../assets/Fonts/Poppins/Poppins-Regular.ttf') format('svg'); /* Legacy iOS */
 }
 
 #passinput{
@@ -10,7 +12,8 @@
     letter-spacing: 0.7em; 
     background: transparent;
     width: 125px; 
-    border:none; border-bottom: 
-    1px solid grey; 
+    border:none; 
+    border-bottom: 1px solid grey; 
+    color: black;
     margin-bottom: 10px;
 }

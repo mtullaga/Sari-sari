@@ -6,24 +6,24 @@
         <ons-icon icon="md-menu" size="20px"></ons-icon>
       </ons-toolbar-button>
     </div>
-    <div class="center">
+    <div class="center" style="font-family: Poppins;">
       Item List
     </div>
     <div class="right">
       <ons-toolbar-button onclick="fn.load('items/addItem.html')">
-        <ons-icon icon="md-plus" size="22px"></ons-icon>
+        <ons-icon icon="fa-plus-circle" size="22px"></ons-icon>
       </ons-toolbar-button>
     </div>
   </ons-toolbar>
 
-  <div class="container mb-4">
+  <div class="container mb-4" style="font-family: Poppins;" id="app-items-list">
     <div class="row showItemCorner">
 
         <div class="col-sm-12" style="border: 0px solid green">
              <div class="form-group float-left" style="width: 100%; margin-top: 5px">
                 <label for="category">Select Category:</label>
-                <select class="form-control form-control-sm" onchange="editSelectCatLoad(event)" id="category" name="category" style="margin-top: -10px">
-                  <option value="0">All</option>
+                <select class="form-control form-control-md" @change="selectCategory($event)" style="margin-top: -10px">
+                  <option value="all">All</option>
                 </select>
             </div>
 
@@ -36,7 +36,7 @@
                   <div class="input-group-text"><span class="fa fa-search"></span></div>
                 </div>
                 <input type="text" class="form-control form-sm" id="searchItem" placeholder="Search">
-                <button class="btn btn-primary btn-sm" onclick="btnSearchClk()" >Search</button>
+                <!-- <button class="btn btn-primary btn-sm" onclick="btnSearchClk()" >Search</button> -->
               </div>
         </div>
     </div>
@@ -53,243 +53,26 @@
   
   <script type="text/javascript">
 
-    var ipaddress = localStorage.getItem('serverAddress');
+      new Vue({
+          el: '#app-items-list',
+          data: {
+            msg: 'Hello Mernante'
+          },
 
-    // Load the category list on the combo box
-    loadCatList();
+          methods:{
+            selectCategory: function(evt){
+              console.log(evt.target.value)
+            }
+          },
 
-
-
-    // Under Observation kay sa dili mn gud mo gana usahay sa bluestack
-    $('#searchItem').keyup(function(evt){
-        // loadItemListFromSearch(evt.target.value);
-       if(evt.target.value == ''){
-          loadItemList();
-       }
-        
-        // console.log(evt.target.value);
-    });
-
-    function btnSearchClk(){
-      loadItemList();
-    }
-
-    function editSelectCatLoad(evt){
-        $('#searchItem').val('');
-        loadItemList();
-    }
-
-     function loadCatList(){
-
-      $.post(ipaddress+'/saridb/getcontent.php', {data: 'getCategoryList'}, function(res){
-        if(res == 'No records'){
-        }else{
-          for (var i = 0; i < JSON.parse(res).length; i++) {
-            var id = JSON.parse(res)[i][0];
-            var desc = JSON.parse(res)[i][1];
-            $('.showItemCorner #category').append('<option value="'+id+'">'+desc+'</option>')
+          created(){
+            
           }
-
-          loadItemList();
-        }
       })
-    }
-
-    function loadItemList(){
-
-      var category = $('.showItemCorner #category').val();
-
-      var search = $('.showItemCorner #searchItem').val();
-
-      $('#itemList').empty();
-
-      $.post(ipaddress+'/saridb/getcontent.php', {data:'getAllItemList', category:category, search:search}, function(res){
-
-            if(res == 'No records'){
-              $('#itemList').append('<center><font style="font-size: 15px; "><br><br>No Item List found.</font></center>');
-            }else{
-
-                for (var i = 0; i < JSON.parse(res).length; i++) {
-
-                    var id = JSON.parse(res)[i][0];
-                    var name = JSON.parse(res)[i][1];
-                    var desc = JSON.parse(res)[i][2];
-                    var qty = JSON.parse(res)[i][3];
-                    var price = JSON.parse(res)[i][4];
-                    var unit = JSON.parse(res)[i][5];
-                    var category = JSON.parse(res)[i][6];
-                    var item_act = JSON.parse(res)[i][7];
-
-                    $('#itemList').append('<ons-gesture-detector id="detect'+id+'">'+
-                                  '<fieldset class="border rounded border-secondary pl-2 bg-white mt-2 cl'+id+'" style="width: 100%" id="'+id+'-/-'+name+'-/-'+desc+'-/-'+qty+'-/-'+price+'-/-'+unit+'-/-'+category+'">'+
-                                    // '<legend class="w-auto h6 font-weight-bold m-0 text-primary">'+name+'</legend>'+
-
-                                    
-
-                                      '<div onclick="showFullActivity('+id+')" >'+
-                                        '<div id="partialActivity'+id+'" style="width: 90%;" class="float-left">'+
-                                          // '<p style="text-overflow: ellipsis; overflow: hidden; height: 1.2em; white-space: nowrap;">'+name+'</p>'+ 
-                                          '<p class="mt-1 float-left" style="margin-bottom: 5px">'+name+'</p>'+ 
-                                          '<p class="mt-1 float-right" style="margin-bottom: 5px">&#8369; <b>'+price+'</b></p>'+ 
-
-                                        '</div>'+
-                                        '<div style="width: 8%" id="btnShowFull'+id+'"  class="float-right">'+
-                                          '<ons-icon icon="md-chevron-down" size="20px"></ons-icon>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    
-                                    '<div class="" id="extendActivity'+id+'" style="display:none">'+
-                                        '<table class="mt-2 table table-bordered" style="width: 98%">'+
-                                          '<tr >'+
-                                            '<td style="padding: 0px 10px 0px 10px">Name: </td>'+
-                                            '<td style="padding: 0px 10px 0px 10px"><b>'+name+'</b></td>'+
-                                          '</tr>'+
-                                          '<tr >'+
-                                            '<td style="padding: 0px 10px 0px 10px">Description: </td>'+
-                                            '<td style="padding: 0px 10px 0px 10px"><b>'+desc+'</b></td>'+
-                                          '</tr>'+
-                                          '<tr >'+
-                                            '<td style="padding: 0px 10px 0px 10px">Quantity: </td>'+
-                                            '<td style="padding: 0px 10px 0px 10px"><b>'+qty+' '+unit+'</b></td>'+
-                                          '</tr>'+
-                                          '<tr >'+
-                                            '<td style="padding: 0px 10px 0px 10px">Price: </td>'+
-                                            '<td style="padding: 0px 10px 0px 10px"><b>&#8369; '+price+'</b></td>'+
-                                          '</tr>'+
-                                          '<tr >'+
-                                            '<td style="padding: 0px 10px 0px 10px">Category: </td>'+
-                                            '<td style="padding: 0px 10px 0px 10px"><b>'+category+'</b></td>'+
-                                          '</tr>'+
-                                         
-                                        '</table>'+
-
-                                        '<a class="float-left text-primary mr-2" style="margin-top: -8px" onclick="btnUpdateClk('+id+', \''+name+'\', \''+desc+'\', \''+qty+'\', \''+price+'\', \''+unit+'\', \''+category+'\')"><u>Update</u></a>'+ 
-                                        '<a class="float-left text-danger" style="margin-top: -8px" onclick="btnDeleteClk('+id+', \''+name+'\')"><u>Delete</u></a>'+
-                                    
-                                        '<button class="btn btn-info btn-sm mb-2 mr-2 float-right" onclick="hideFullActivity('+id+')" style="margin-top: -10px; height: 25px; padding-top: 0px">Show Less</button>'+
-                                    '</div>'+
-
-                                  '</fieldset></ons-gesture-detector>');
-
-                       getLongPress(id);
-                     
-                    }
-              }
-      });
-                
-              
-
-    }
-
-    function btnUpdateClk(id, name, desc, qty, price, unit, category){
-      var items = [id, name, desc, qty, price, unit, category];
-          localStorage.setItem('itemEditArr', JSON.stringify(items));
-          fn.load('items/editItem.html')
-    }
-
-    function btnDeleteClk(id, name){
-      ons.notification.confirm({
-          message: 'Are you sure you want to delete <b>'+name+'</b>?',
-          buttonLabels: ['Yes', 'No'],
-          callback: function(i) {
-            if (i==0) {
-              deleteItem(id);
-            }
-          }
-        }); 
-    }
-
-    function getLongPress(id){
-       document.getElementById('detect'+id).addEventListener('hold', function (event) {
-           var res = $('fieldset.cl'+id).attr('id').split('-/-');
-           loadLongPressItem(res[0], res[1], res[2], res[3], res[4], res[5], res[6]);
-        });
-    }
-
-
-    function showFullActivity(id){
-        $('#btnShowFull'+id).hide();
-        $('#partialActivity'+id).hide();
-        $('#extendActivity'+id).slideDown(700);
-    }
-
-    function hideFullActivity(id){
-        $('#extendActivity'+id).slideUp(500);
-        $('#partialActivity'+id).show('slow');
-        $('#btnShowFull'+id).show('slow');
-    }
-
-
-    function loadLongPressItem(id, name, desc, qty, price, unit, category){
-        ons.openActionSheet({
-          title: 'Select Action for <b>'+name+'</b>',
-          cancelable: true,
-          buttons: [
-            {
-              label:'<font color="blue">Update</font>',
-              icon: 'md-edit'
-            },
-            {
-              label: '<font color="red">Delete</font>',
-              icon: 'md-block'
-            },
-            {
-              label: '<font>Cancel</font>',
-              icon: 'md-close'
-            }
-          ]
-        }).then(function(index) {
-          if(index == '0'){
-            var items = [id, name, desc, qty, price, unit, category];
-            localStorage.setItem('itemEditArr', JSON.stringify(items));
-            fn.load('items/editItem.html')
-          }
-          if(index == '1'){
-              ons.notification.confirm({
-                message: 'Are you sure you want to delete <b>'+name+'</b>?',
-                buttonLabels: ['Yes', 'No'],
-                callback: function(i) {
-                  if (i==0) {
-                    deleteItem(id);
-                  }
-                }
-              }); 
-          }
-
-       })
-    }
-
-    function deleteItem(id){
-       $.post(ipaddress+'/saridb/getcontent.php', {
-          data: 'deleteItem',
-          itemId: id
-        }, function(res){
-            if(res == 'okay na'){
-                ons.notification.alert({
-                    message:'Item successfully deleted.',
-                    callback: function(){
-                      loadItemList();
-                    }
-                });
-            }else{
-              console.log(res);
-            }
-
-          })
-    }
 
 
   </script>
   <style type="text/css">
-
-    .sample
-          {
-          border:2px solid #a1a1a1;
-          padding:10px 40px; 
-          background:#dddddd;
-          width:300px;
-          border-radius:25px;
-          }
 
   </style>
 </ons-page>

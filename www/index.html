@@ -11,11 +11,14 @@
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
         <meta name="color-scheme" content="light dark">
 
-        <link rel="stylesheet" href="css/index.css">
+        
         <!-- <link rel="stylesheet" href="assets/bootstrap-4.3.1/css/bootstrap.min.css"> -->
         <!-- <link rel="stylesheet" href="assets/fontawesome-5.15.1/css/all.min.css"> -->
-        <link rel="stylesheet" href="assets/onsenui/css/onsenui.min.css">
-        <link rel="stylesheet" href="assets/onsenui/css/onsen-css-components.min.css">
+        <link rel="stylesheet" href="assets/onsenui/css/onsenui.css">
+
+        <link rel="stylesheet" href="assets/onsenui/css/onsen-css-components.css">
+
+        
 
         <script src="assets/onsenui/js/onsenui.min.js"></script>
 
@@ -33,6 +36,8 @@
 
         <script src="js/db.js"></script>
 
+        <link rel="stylesheet" href="css/index.css">
+
 
         <title>Login</title>
     </head>
@@ -40,13 +45,20 @@
        
         <ons-page id="app">
 
-            <center>
+            <center style="font-family: Poppins;">
                 <img src="img/logo.png" width="185" height="100" style="margin-top: 10px">
-                <h4 style="margin-top: 0px; color: blue">Management System</h4>
+                <h4 class="myFont" style="margin-top: 0px; color: rgb(14, 66, 207); font-family: Poppins;">Management System</h4>
             </center>
 
             <center>
-                <ons-input placeholder="Input your name" v-model="pin1" ></ons-input>
+                <input type="password" 
+                    id="passinput" 
+                    maxlength="2" 
+                    disabled="disabled" 
+                    inputmode="numeric" 
+                    minlength="2"
+                    maxlength="4" 
+                    v-model="pin"/>
             </center>
 
             <div style="border: 0px solid green; width: 190px; margin: auto; margin-top: 10px">       
@@ -67,7 +79,7 @@
 
             </div>
             <br>
-            <center><a href="">Forgot Password</a></center>
+            <center><a href="" style="font-family: Poppins;">Forgot Password</a></center>
         </ons-page>
 
             <!-- </div> -->

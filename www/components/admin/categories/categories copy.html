@@ -1,0 +1,277 @@
+
+<ons-page>
+  <ons-toolbar>
+    <div class="left">
+      <ons-toolbar-button onclick="fn.open()">
+        <ons-icon icon="md-menu" size="20px"></ons-icon>
+      </ons-toolbar-button>
+    </div>
+    <div class="center">
+      Category List
+    </div>
+    <div class="right">
+      <ons-toolbar-button onclick="addNewCategory()">
+        <ons-icon icon="fa-plus-circle" size="22px"></ons-icon>
+      </ons-toolbar-button>
+    </div>
+  </ons-toolbar>
+
+  <div class="container mb-4" style="font-family: Poppins;">
+    <div class="row showCategoryCorner">
+
+        <div class="col-sm-12 mt-3 mb-1" style="border:0px solid green">
+
+              <label class="sr-only" for="searchCategory">Search</label>
+              <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                  <div class="input-group-text"><span class="fa fa-search"></span></div>
+                </div>
+                <input type="text" class="form-control form-sm" id="searchCategory" placeholder="Search">
+                <!-- <button class="btn btn-primary btn-sm" onclick="btnSearchClk()" >Search</button> -->
+              </div>
+        </div>
+    </div>
+
+      <div id="CategoryList">
+      </div>
+
+  </div>
+    
+ 
+
+  
+  <script type="text/javascript">
+
+    var ipaddress = localStorage.getItem('serverAddress');
+
+    // Load the category list on the combo box
+
+
+    // Under Observation kay sa dili mn gud mo gana usahay sa bluestack
+    $('#searchCategory').keyup(function(evt){
+        // loadItemListFromSearch(evt.target.value);
+       if(evt.target.value == ''){
+          loadCategoryList();
+       }
+        
+        // console.log(evt.target.value);
+    });
+
+    function btnSearchClk(){
+      loadCategoryList();
+    }
+
+    loadCategoryList();
+
+
+
+    function loadCategoryList(){
+
+      var search = $('.showCategoryCorner #searchCategory').val();
+
+      $('#CategoryList').empty();
+
+      $.post(ipaddress+'/saridb/getcontent.php', {data:'getAllCategoryList', search:search}, function(res){
+        if(res == 'No records'){
+          $('#CategoryList').append('<center><font style="font-size: 15px; "><br><br>No category List found.</font></center>');
+        }else{
+
+            for (var i = 0; i < JSON.parse(res).length; i++) {
+
+                var id = JSON.parse(res)[i][0];
+                var name = JSON.parse(res)[i][1];
+
+                $('#CategoryList').append('<ons-gesture-detector id="detect'+id+'">'+
+                              '<fieldset class="border rounded border-secondary pl-2 bg-white mt-2 cl'+id+'" style="width: 100%" id="'+id+'-/-'+name+'">'+
+                                // '<legend class="w-auto h6 font-weight-bold m-0 text-primary">'+name+'</legend>'+
+                                  '<div>'+
+                                    '<div style="width: 90%;" class="float-left">'+
+                                      '<p class="mt-1 float-left" style="margin-bottom: 5px">'+name+'</p>'+ 
+
+                                    '</div>'+
+                                  '</div>'+
+
+                              '</fieldset></ons-gesture-detector>');
+
+                   getLongPress(id);
+                 
+            }
+        }
+      });
+                
+              
+
+    }
+
+    function getLongPress(id){
+       document.getElementById('detect'+id).addEventListener('hold', function (event) {
+           var res = $('fieldset.cl'+id).attr('id').split('-/-');
+           loadLongPressItem(res[0], res[1]);
+        });
+    }
+
+    function loadLongPressItem(id, name){
+        ons.openActionSheet({
+          title: 'Select Action for <b>'+name+'</b>',
+          cancelable: true,
+          buttons: [
+            {
+              label:'<font color="blue">Update</font>',
+              icon: 'md-edit'
+            },
+            {
+              label: '<font color="red">Delete</font>',
+              icon: 'md-block'
+            },
+            {
+              label: '<font>Cancel</font>',
+              icon: 'md-close'
+            }
+          ]
+        }).then(function(index) {
+          if(index == '0'){
+            updateCategory(id, name);
+          }
+          if(index == '1'){
+              ons.notification.confirm({
+                message: 'Are you sure you want to delete <b>'+name+'</b>?',
+                buttonLabels: ['Yes', 'No'],
+                callback: function(i) {
+                  if (i==0) {
+                    deleteCategory(id);
+                  }
+                }
+              }); 
+          }
+
+       })
+    }
+
+    function addNewCategory(){
+
+      var fn = function() {
+        ons.notification.prompt({
+            messageHTML: 'Please input new category.',
+            buttonLabel: ['Cancel','OK'],
+            callback: function(evt) {
+              if(evt == ''){
+                ons.notification.alert({
+                      message: 'Please input new category.',
+                      callback: fn
+                    });
+              }else if(evt == null){
+                 // Performs the cancel button
+              }else{
+                  $.post(ipaddress+'/saridb/getcontent.php', {
+                    data: 'checkCategoryExistElseAdd',
+                    categoryDesc: evt
+                  }, function(res){
+                      if(res == 'okay na'){
+                          ons.notification.alert({
+                              message:'Category successfully added.',
+                              callback: function(){
+                                loadCategoryList();
+                              }
+                          });
+                      }else if(res == 'Already Exist'){
+                        ons.notification.alert({
+                          message: 'Category description already exist.',
+                          callback: fn
+                        });
+                      }else{
+                        ons.notification.alert({
+                          message: res,
+                          callback: fn
+                        });
+                      }
+                    })
+               }
+            }
+          });
+      }
+
+      fn();
+    }
+
+    function updateCategory(id, name){
+      var fn = function() {
+        ons.notification.prompt({
+            messageHTML: 'Please input new category.',
+            buttonLabel: ['Cancel','OK'],
+            defaultValue: name,
+            callback: function(evt) {
+              if(evt == ''){
+                ons.notification.alert({
+                      message: 'Please input new category.',
+                      callback: fn
+                    });
+              }else if(evt == null){
+                 // Performs the cancel button
+              }else{
+                  $.post(ipaddress+'/saridb/getcontent.php', {
+                    data: 'checkCategoryExistElseUpdate',
+                    categoryDesc: evt,
+                    categoryId: id
+                  }, function(res){
+                      if(res == 'okay na'){
+                          ons.notification.alert({
+                              message:'Category successfully updated.',
+                              callback: function(){
+                                loadCategoryList();
+                              }
+                          });
+                      }else if(res == 'Already Exist'){
+                        ons.notification.alert({
+                          message: 'Category Description already exist.',
+                          callback: fn
+                        });
+                      }else{
+                        ons.notification.alert({
+                          message: res,
+                          callback: fn
+                        });
+                      }
+                    })
+               }
+            }
+          });
+      }
+
+      fn();
+    }
+
+
+    function deleteCategory(id){
+       $.post(ipaddress+'/saridb/getcontent.php', {
+          data: 'deleteCategory',
+          categoryId: id
+        }, function(res){
+            if(res == 'okay na'){
+                ons.notification.alert({
+                    message:'Category successfully deleted.',
+                    callback: function(){
+                      loadCategoryList();
+                    }
+                });
+            }else{
+              console.log(res);
+            }
+
+          })
+    }
+
+
+  </script>
+  <style type="text/css">
+
+    .sample
+          {
+          border:2px solid #a1a1a1;
+          padding:10px 40px; 
+          background:#dddddd;
+          width:300px;
+          border-radius:25px;
+          }
+
+  </style>
+</ons-page>
